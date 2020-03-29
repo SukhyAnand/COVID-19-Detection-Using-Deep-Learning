@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" >
+    <title>COVID-19 Detection</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <style> 
+            input[type=button], input[type=submit], input[type=reset] {
+              background-color: black;
+              border: none;
+              color: white;
+              padding: 10px 27px;
+              text-decoration: none;
+              margin: 4px 2px;
+              cursor: pointer;
+            }
+            </style>
+        
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+        
+        <script>
+            function round(scoreValue){
+                return scoreValue.toFixed(2);
+            }
+        </script>
+        
+        
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(
+            function(){
+                $('#submit-form-final').attr('disabled',true);
+                $('#submit-form-final').css('display','none');
+                // alert("Disabled")
+                $('#file').change(
+                    function(){
+                        if ($(this).val()){
+                            $('#submit-form-final').removeAttr('disabled'); 
+                            $('#submit-form-final').css('display','block');
+                        }
+                        else {
+                            $('#submit-form-final').attr('disabled',true);
+                            $('#submit-form-final').css('display','block');
+                        }
+                    });
+            });
+        </script>
+    </head>
+    
+    <body">
+        <div class="container-fluid">
+            <!-- <div class="row" style="text-align: center; top: 20px; position: relative;">
+                <img src="https://www.michaelkors.global/img/logo_mk.png" width="200px">
+            </div> -->
+            <div class="info-container" style="position: relative; margin-left: 15px;">
+                <div class="row" style="margin-bottom: 10px;">
+                    <h2 style="top:20px; position: relative;font-family: monospace; color:white">COVID-19 Affected Lungs Classification from Chest X-Ray</h2>
+                    
+                </div>
+		<br>
+              
+                
+                <form id="form" method="POST" enctype="multipart/form-data">
+                    <div class="row center-block" style="position: relative; margin-top: 20px">
+                        <!-- <div class="col-md-6">
+                            <input type="file" name="query_img">
+                            
+                        </div> -->
+                        <!-- <div class="col-md-6">
+                            <input type="file" name="query_img" />
+                        </div> -->
+                        <label class="file">
+                            <input type="file" id="file" name="query_img">
+                            <span class="file-custom"></span>
+                        </label>
+                        <!-- <div class="col-md-6">
+                            <input type="submit">
+                        </div> -->
+                        <div>
+                            <button class="glow-on-hover" type="button" id="submit-form-final" disabled="disabled">Submit</button>
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+            
+            
+            
+            <div class="row" style="margin-top:30px;">
+                <div class="col-md-6 col-xs-6">
+                    <!-- <h4 style="font-family: monospace;">Your awesome picture</h4> -->
+                    {% if query_path %}
+                    <img src="{{ query_path }}" class="img-fluid rounded mx-auto d-block" width="400px" style="border:2px white solid">
+                    <!-- <div class="mx-auto d-block" style="border: 1px solid white;
+                        position: relative;
+                        top: 5px;
+                        color: white;
+                        text-align: center;
+                        font-family: monospace;
+                        text-transform: capitalize;
+                        width:400px;">
+                                Your chest cavity X-Ray
+                        </div> -->
+                    {% endif %}
+                </div>
+                <div class="col-md-6 col-xs-6" style="color:white;
+                text-align: center;
+                font-family: monospace;
+                text-transform: capitalize; margin-top:20px;">
+                    {% if predicted_scores == "None" %}
+                        <div>Looks like we have an error!</div>
+                    {% else %}
+                    {% for score in predicted_scores %}
+		    {% if score.positive > score.negative %}
+		    <div style="position:relative; left:120px;">
+                        <figure style="margin-right: 20px; margin-bottom: 20px;">
+                                <div class="row">
+                                    COVID-19 Prediction:
+                                </div>
+                                <div class="row" style="margin-top:10px;">
+                                    <h5 style="color:#FF6347">Oh no! You have tested positive for COVID-19!</h5>
+				    <h5>Prediction Score: {{ score.positive }}%</h5>
+                                </div>
+                        </figure>
+                    </div>
+		    {% else %}
+                    <div style="position:relative; left:120px;">
+                        <figure style="margin-right: 20px; margin-bottom: 20px;">
+                                <div class="row">
+                                    COVID-19 Prediction:
+                                </div>
+                                <div class="row">
+				    <h5 style="color:#00FF00">Phew! You have tested negative for COVID-19!</h5>
+				    <h5>Prediction Score: {{ score.negative }}%</h5>
+                                </div>
+                        </figure>
+                    </div>
+		    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </div>
+               
+            </div>   
+        </div>
+        
+        <script>
+            $('#submit-form-final').click(function () {
+                $('#form').submit();
+            });
+        </script>     
+    </body>
+</html>

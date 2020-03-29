@@ -17,6 +17,9 @@ This project uses a number of open source projects to work properly:
 * [Python] - awesome language we love
 * [Tensorflow] - An end-to-end open source machine learning platform for everyone
 * [Teachable Machine by Google] : To train a computer to recognize your own images, sounds, & poses.
+* [HTML] : Markup language
+* [CSS] : To describe the presentation of HTML documents
+* [JQuery] : A JavaScript library
 
 #### Installation
 
